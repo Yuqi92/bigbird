@@ -287,23 +287,23 @@ def model_fn_builder(bert_config):
         
         ## add by Yuqi
         precision, precision_op = tf.compat.v1.metrics.precision(
-            labels=tf.cast(label_ids, tf.int64), predictions=log_probs, weights=None, name="precision")
+            labels=label_ids, predictions=predictions, weights=None, name="precision")
         
         recall, recall_op = tf.compat.v1.metrics.recall(
-            labels=tf.cast(label_ids, tf.int64), predictions=log_probs, weights=None, name="recall")
+            labels=label_ids, predictions=predictions, weights=None, name="recall")
         
         
         true_positives, true_positives_op = tf.compat.v1.metrics.true_positives(
-            labels=tf.cast(label_ids, tf.int64), predictions=log_probs, weights=None, name="true_positives")
+            labels=label_ids, predictions=predictions, weights=None, name="true_positives")
         
         true_negatives, true_negatives_op = tf.compat.v1.metrics.true_negatives(
-            labels=tf.cast(label_ids, tf.int64), predictions=log_probs, weights=None, name="true_negatives")
+            labels=label_ids, predictions=predictions, weights=None, name="true_negatives")
         
         false_positives, false_positives_op = tf.compat.v1.metrics.false_positives(
-            labels=tf.cast(label_ids, tf.int64), predictions=log_probs, weights=None, name="false_positives")
+            labels=label_ids, predictions=predictions, weights=None, name="false_positives")
         
         false_negatives, false_negatives_op = tf.compat.v1.metrics.false_negatives(
-            labels=tf.cast(label_ids, tf.int64), predictions=log_probs, weights=None, name="false_negatives")
+            labels=label_ids, predictions=predictions, weights=None, name="false_negatives")
         
         metric_dict = {
             "P@1": (p1, p1_op),
