@@ -286,6 +286,7 @@ def model_fn_builder(bert_config):
         f11 = tf.math.divide_no_nan(2*p1*r1, p1+r1)
         
         ## add by Yuqi
+        '''
         precision, precision_op = tf.compat.v1.metrics.precision(
             labels=label_ids, predictions=predictions, weights=None, name="precision")
         
@@ -304,19 +305,19 @@ def model_fn_builder(bert_config):
         
         false_negatives, false_negatives_op = tf.compat.v1.metrics.false_negatives(
             labels=label_ids, predictions=predictions, weights=None, name="false_negatives")
-        
+        '''
         metric_dict = {
             "P@1": (p1, p1_op),
             "R@1": (r1, r1_op),
             "f1@1": (f11, tf.no_op()),
             "classification_accuracy": accuracy,
             "classification_loss": loss,
-            "precision":(precision, precision_op),
-            "recall":(recall, recall_op),
-            "TP":(true_positives, true_positives_op),
-            "TN":(true_negatives, true_negatives_op),
-            "FP":(false_positives, false_positives_op),
-            "FN":(false_negatives, false_negatives_op),    
+#             "precision":(precision, precision_op),
+#             "recall":(recall, recall_op),
+#             "TP":(true_positives, true_positives_op),
+#             "TN":(true_negatives, true_negatives_op),
+#             "FP":(false_positives, false_positives_op),
+#             "FN":(false_negatives, false_negatives_op),    
         }
 
         return metric_dict
