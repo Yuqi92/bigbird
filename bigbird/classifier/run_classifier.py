@@ -297,8 +297,8 @@ def model_fn_builder(bert_config):
         true_positives, true_positives_op = tf.compat.v1.metrics.true_positives(
             labels=label_ids, predictions=predictions, weights=None, name="true_positives")
         
-#         true_pos = tf.keras.metrics.TruePositives()
-#         true_pos.update_state(y_pred=predictions,y_true=label_ids)
+        true_positives_v2 = tf.keras.metrics.TruePositives()
+        true_positives_v2.update_state(y_pred=predictions,y_true=label_ids)
         
         true_negatives, true_negatives_op = tf.compat.v1.metrics.true_negatives(
             labels=label_ids, predictions=predictions, weights=None, name="true_negatives")
@@ -326,6 +326,7 @@ def model_fn_builder(bert_config):
             "TN":(true_negatives, true_negatives_op),
             "FP":(false_positives, false_positives_op),
             "FN":(false_negatives, false_negatives_op),
+            "TP_v2":true_positives_v2,
             "AUROC_v1":(auc_v1, auc_op_v1),
             "AUROC_v2": auc_v2,
         }
@@ -460,6 +461,7 @@ def main(_):
     ]
     all_ckpts = natsorted(all_ckpts)
     ckpt = all_ckpts[-1]   # only eval last ckpt for test as of now
+    logging.info("!!!!!!!!!!!!updated version!!!!!!!!!!!!!!")
 #     for ckpt in all_ckpts:
     current_step = int(os.path.basename(ckpt).split("-")[1])
     output_eval_file = os.path.join(
