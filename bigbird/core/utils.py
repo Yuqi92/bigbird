@@ -582,7 +582,7 @@ class EmbeddingLayer(tf.keras.layers.Layer):
 ########################## TPU/CHECKPOINT UTILS ################################
 
 
-def get_estimator(config, model_fn, keep_checkpoint_max=10):
+def get_estimator(config, model_fn, keep_checkpoint_max=0):
   """Create TPUEstimator object for given config and model_fn."""
   tpu_cluster_resolver = None
   if config["use_tpu"] and config["tpu_name"]:

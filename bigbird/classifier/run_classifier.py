@@ -313,6 +313,9 @@ def model_fn_builder(bert_config):
             labels=label_ids, predictions=predictions, weights=None, name="AUROC")
         auc_v2 = tf.keras.metrics.AUC(curve='ROC')
         auc_v2.update_state(y_pred=predictions,y_true=label_ids)
+        
+        auprc_v2 = tf.keras.metrics.AUC(curve='PR')
+        auprc_v2.update_state(y_pred=predictions,y_true=label_ids)
 
         metric_dict = {
             "P@1": (p1, p1_op),
@@ -329,6 +332,7 @@ def model_fn_builder(bert_config):
             "TP_v2":true_positives_v2,
             "AUROC_v1":(auc_v1, auc_op_v1),
             "AUROC_v2": auc_v2,
+            "AUPRC_v2": auprc_v2,      
         }
 
         return metric_dict
@@ -460,11 +464,11 @@ def main(_):
             os.path.join(FLAGS.output_dir, "model.ckpt*.meta"))
     ]
     all_ckpts = natsorted(all_ckpts)
-    # only eval last ckpt for test as of now
-    last_ckpt = []
-    last_ckpt.append(all_ckpts[-1])
-    logging.info("!!!!!!!!!!!!updated version!!!!!!!!!!!!!!")
-    for ckpt in last_ckpt:
+## only eval last ckpt for test 
+#     last_ckpt = []
+#     last_ckpt.append(all_ckpts[-1])
+#     logging.info("!!!!!!!!!!!!updated version!!!!!!!!!!!!!!")
+    for ckpt in all_ckpts:
       current_step = int(os.path.basename(ckpt).split("-")[1])
       output_eval_file = os.path.join(
           FLAGS.output_dir, "eval_results_{}.txt".format(current_step))
