@@ -460,21 +460,21 @@ def main(_):
             os.path.join(FLAGS.output_dir, "model.ckpt*.meta"))
     ]
     all_ckpts = natsorted(all_ckpts)
-    ckpt = all_ckpts[-1]   # only eval last ckpt for test as of now
+    # only eval last ckpt for test as of now
     logging.info("!!!!!!!!!!!!updated version!!!!!!!!!!!!!!")
-#     for ckpt in all_ckpts:
-    current_step = int(os.path.basename(ckpt).split("-")[1])
-    output_eval_file = os.path.join(
-      FLAGS.output_dir, "eval_results_{}.txt".format(current_step))
-    result = estimator.evaluate(input_fn=eval_input_fn,
-                              checkpoint_path=ckpt,
-                              steps=eval_steps)
+    for ckpt in all_ckpts[-1]:
+      current_step = int(os.path.basename(ckpt).split("-")[1])
+      output_eval_file = os.path.join(
+          FLAGS.output_dir, "eval_results_{}.txt".format(current_step))
+      result = estimator.evaluate(input_fn=eval_input_fn,
+                                  checkpoint_path=ckpt,
+                                  steps=eval_steps)
 
-    with tf.io.gfile.GFile(output_eval_file, "w") as writer:
-    logging.info("***** Eval results *****")
-    for key in sorted(result.keys()):
-      logging.info("  %s = %s", key, str(result[key]))
-      writer.write("%s = %s\n" % (key, str(result[key])))
+      with tf.io.gfile.GFile(output_eval_file, "w") as writer:
+        logging.info("***** Eval results *****")
+        for key in sorted(result.keys()):
+          logging.info("  %s = %s", key, str(result[key]))
+          writer.write("%s = %s\n" % (key, str(result[key])))
 
   if FLAGS.do_export:
     logging.info("***** Running export *****")
