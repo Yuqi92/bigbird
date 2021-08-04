@@ -461,8 +461,10 @@ def main(_):
     ]
     all_ckpts = natsorted(all_ckpts)
     # only eval last ckpt for test as of now
+    last_ckpt = []
+    last_ckpt.append(all_ckpts[-1])
     logging.info("!!!!!!!!!!!!updated version!!!!!!!!!!!!!!")
-    for ckpt in all_ckpts[-1]:
+    for ckpt in last_ckpt:
       current_step = int(os.path.basename(ckpt).split("-")[1])
       output_eval_file = os.path.join(
           FLAGS.output_dir, "eval_results_{}.txt".format(current_step))
