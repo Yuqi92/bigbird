@@ -297,6 +297,9 @@ def model_fn_builder(bert_config):
         true_positives, true_positives_op = tf.compat.v1.metrics.true_positives(
             labels=label_ids, predictions=predictions, weights=None, name="true_positives")
         
+        true_pos = tf.keras.metrics.TruePositives()
+        true_pos.update_state(y_pred=predictions,y_true=label_ids)
+        
         true_negatives, true_negatives_op = tf.compat.v1.metrics.true_negatives(
             labels=label_ids, predictions=predictions, weights=None, name="true_negatives")
         
@@ -317,7 +320,8 @@ def model_fn_builder(bert_config):
             "TP":(true_positives, true_positives_op),
             "TN":(true_negatives, true_negatives_op),
             "FP":(false_positives, false_positives_op),
-            "FN":(false_negatives, false_negatives_op),    
+            "FN":(false_negatives, false_negatives_op),
+            "TP_keras": true_pos,
         }
 
         return metric_dict
@@ -391,7 +395,7 @@ def main(_):
 
   if not FLAGS.do_train and not FLAGS.do_eval and not FLAGS.do_export:
     raise ValueError(
-        "At least one of `do_train`, `do_eval` must be True.")
+        "At least one of `do_train`, `do_eval`, `do_export`  must be True.")
 
   bert_config = flags.as_dictionary()
   print(bert_config)
@@ -449,7 +453,7 @@ def main(_):
             os.path.join(FLAGS.output_dir, "model.ckpt*.meta"))
     ]
     all_ckpts = natsorted(all_ckpts)
-    for ckpt in all_ckpts:
+    for ckpt in all_ckpts[-1]:
       current_step = int(os.path.basename(ckpt).split("-")[1])
       output_eval_file = os.path.join(
           FLAGS.output_dir, "eval_results_{}.txt".format(current_step))
